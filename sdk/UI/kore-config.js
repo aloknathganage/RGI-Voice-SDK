@@ -19,7 +19,7 @@
             queryParams: {}
         }
     }
-    botOptions.JWTUrl = "http://localhost:3000/api/users/sts";
+    botOptions.JWTUrl = "https://rgi-voice-backend-sdk.onrender.com/get-token";
     userId = Math.floor(100000 + Math.random() * 900000);
     botOptions.userIdentity = userId;// Provide users email id here
     // botOptions.userIdentity = 'aloknath.ganage@hoonartek.com';// Provide users email id here
