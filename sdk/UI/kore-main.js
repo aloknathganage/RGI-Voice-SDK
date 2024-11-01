@@ -2,11 +2,11 @@
 
     $(document).ready(function () {
           //hoonartek kore customization for mic on off
-          $(document).on('click', '.notRecordingMicrophone', function() {
-            sessionStorage.setItem("mic",true)
+          $(document).on('click', '.notRecordingMicrophone', function(e) {
+             if(e.originalEvent)sessionStorage.setItem("mic",true)
         });
-        $(document).on('click', '.recordingMicrophone', function() {
-            sessionStorage.setItem("mic",false)
+        $(document).on('click', '.recordingMicrophone', function(e) {
+          if(e.originalEvent)sessionStorage.setItem("mic",false)
         });
         //hoonartek kore customization for mic on off
         function assertion(options, callback) {
