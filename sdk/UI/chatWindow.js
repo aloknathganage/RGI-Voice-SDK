@@ -202,6 +202,21 @@
                 }
                 return low;
             }
+		//hoonartek kore customization for mic on off
+            function reFormatUserText(text){
+                const phoneRegex = /^\d{10}$/;
+                let removeSpaces = text.replace(/\s/g, "");
+                const vehicleRegex = /\b[a-z]{2}\d{2}[a-z]{2}\d{4}\b/i;
+                  if (vehicleRegex.test(removeSpaces)) {
+                    return removeSpaces.replace(/(\w{2})(\d{2})(\w{2})(\d{4})/, "$1-$2-$3-$4");
+                  }
+                  if(phoneRegex.test(removeSpaces)){
+                      return removeSpaces
+                  }
+                return text.replace(/\.$/, '');
+              }
+            //hoonartek kore customization for mic on off ends
+		
             //hoonartek kore customization for mic on off
             function sortSpeakText(speakText,obj){
                 let text = speakText;
@@ -236,8 +251,10 @@
                     }
 
                 }
-
-                return text
+		else{
+                    console.log("This is text ")
+                }
+                return text.replace(/<\/?b>/g, '');
             }
             //hoonartek kore customization for mic on off
             function xssAttack(txtStr) {
@@ -1930,7 +1947,10 @@
                     setTimeout(function () {
                         me.resetWindow();
                     });
-                    $('.recordingMicrophone').trigger('click');
+                   // hoonartek kore customization for mic
+                    // $('.recordingMicrophone').trigger('click');
+                    	sessionStorage.setItem("mic",false)
+                    // hoonartek kore customization for mic ends
                     if (ttsAudioSource) {
                         ttsAudioSource.stop();
                     }
@@ -2396,6 +2416,11 @@
                 me.customTemplateObj.helpers = me.helpers;
                 me.customTemplateObj.extension = extension;
                 graphLibGlob = me.config.graphLib || "d3";
+		    // hoonartek kore customization for mic
+                if(msgData.type === "currentUser"){
+                    msgData.message[0].cInfo.body = reFormatUserText(msgData.message[0].cInfo.body);
+                }
+                // hoonartek kore customization for mic ends
                 if (msgData.type === "bot_response") {
                     sendFailedMessage.retryCount=0;
                     waiting_for_message = false;
@@ -2410,11 +2435,11 @@
                             $('.typingIndicatorContent').css('display', 'none');
                         }
                         /* Hoonartek Customization starts */
-                        if (window.micAutoOnOff){
-                            recognizing = true;
-                            recognition.onstart();
-                            $('.notRecordingMicrophone').trigger('click');
-                        };
+                        // if (window.micAutoOnOff){
+                        //     recognizing = true;
+                        //     recognition.onstart();
+                        //     $('.notRecordingMicrophone').trigger('click');
+                        // };
                         /* Hoonartek Customization ends */
                     }, 500);
                 }
@@ -4926,7 +4951,7 @@
                     speechSyn.onend = function () {
                         audioPlaying = false;
                         //hoonartek kore customization for mic on off
-                        if(!recognizing)recognition.start(); 
+                        // if(!recognizing)recognition.start(); 
                         //hoonartek kore customization for mic on off
                         playMessageSequence();
                     }
@@ -4934,8 +4959,8 @@
                 if(recognizing){
                     recognition.stop();
                 }
-                else if(sessionStorage.getItem("mic")== true || !recognizing){
-                        recognition.start(); 
+                else if(sessionStorage.getItem("mic")== 'true' && !recognizing){
+                    recognition.start();  
                 }
                 //hoonartek kore customization for mic on off
             }
