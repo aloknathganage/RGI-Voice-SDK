@@ -274,6 +274,16 @@
 			 $(messageHtml).data(msgData);
 			 this.bindCheckListTemplates($(messageHtml),msgData);
 		}
+		// hoonartek customization for travel county selection starts start
+		else if (msgData.message[0] && msgData.message[0].component && msgData.message[0].component.payload && msgData.message[0].component.payload.template_type == "countryDropdownTemplate") {
+			messageHtml = $(this.getChatTemplate("countryDropdownTemplate")).tmpl({
+				'msgData': msgData,
+				'helpers': this.helpers,
+				'extension': this.extension
+				
+			});
+			// console.log('Option Values:', "msgData", msgData.message[0].component.payload.countryOptions, "helpers", this.helpers, "extension",  this.extension);
+		}
 		// else if (msgData.message[0] && msgData.message[0].component && msgData.message[0].component.payload && msgData.message[0].component.payload.template_type === "SYSTEM") {
 		// 	if (msgData.message[0].component && msgData.message[0].component.payload) {
 		// 		msgData.message[0].cInfo.body = msgData.message[0].component.payload.text || "";
@@ -3295,6 +3305,98 @@ var checkListTemplate = '<script id="chat_checklist_tmpl" type="text/x-jqury-tmp
             {{/if}} \
         </script>';
 
+
+// hoonartek customization for travel country selection template starts start
+        	var countryDropdownTemplate = '<script id="chat_message_multiselect_tmpl" type="text/x-jquery-tmpl">\
+				{{if msgData.message}}\
+				<li {{if msgData.type !== "bot_response"}} id="msg_${msgItem.clientMessageId}"{{/if}} class="{{if msgData.type === "bot_response"}}fromOtherUsers{{else}}fromCurrentUser{{/if}} with-icon"> \
+					<div class="buttonTmplContent"> \
+						{{if msgData.icon}}<div class="profile-photo"> <div class="user-account avtar" style="background-image:url(${msgData.icon})"></div> </div> {{/if}} \
+						<div class="{{if msgData.message[0].component.payload.fromHistory}} dummy messageBubble {{else}}messageBubble{{/if}}"> \
+							{{if msgData.message[0].component.payload.heading}}<div class="templateHeading">${msgData.message[0].component.payload.heading}</div>{{/if}} \
+							<!-- Search Input --> \
+							<div class="multiSelectContainer"> \
+								<input type="text" class="searchInput" placeholder="Search for countries..." /> \
+								<!-- Checkbox Options --> \
+								<div class="checkboxOptions"> \
+									{{each(key, msgItem) msgData.message[0].component.payload.elements}} \
+										<div class="multiSelectOption"> \
+											<input type="checkbox" class="dropdownTemplatesValues" value="${msgItem.value}" id="checkbox_${key}" \
+											{{if msgData.message[0].component.selectedValues && msgData.message[0].component.selectedValues.indexOf(msgItem.value) !== -1}}checked{{/if}} /> \
+											<label for="checkbox_${key}" title="${msgItem.title}"> \
+												{{if msgItem.title.length > 32}}${msgItem.title.substr(0, 32)}...{{else}}${msgItem.title}{{/if}} \
+											</label> \
+										</div> \
+									{{/each}} \
+								</div> \
+							</div> \
+							<!-- Done Button --> \
+							<div class="doneButtonContainer"> \
+								<div class="doneBtn" value="done" title="Done">Done</div> \
+							</div> \
+						</div> \
+					</div> \
+				</li> \
+			{{/if}} \
+			{{if msgData.createdOn}}\
+                            <div aria-live="off" class="extra-info" style="margin-right: 15px; margin-top: -10px; margin-bottom: 3px; margin-left: 48px; font-size: 12px; color: #8a959f;">\
+                            ${helpers.formatDate(msgData.createdOn)}</div>\
+        	{{/if}} \
+		</script>;'
+
+	// country Template Payload
+		// var message = {
+		// 	"type": "template",
+		// 	"payload": {
+		// 		"template_type": "countryDropdownTemplate",
+		// 		"heading": "Please select your prefered country.",
+		// 		"elements": [
+		// 			{
+		// 				"title": "Malaysia",
+		// 				"value": "Malaysia"
+		// 			},
+		// 			{
+		// 				"title": "Singapore",
+		// 				"value": "Singapore"
+		// 			},
+		// 			{
+		// 				"title": "Russian Federation",
+		// 				"value": "Russian Federation"
+		// 			},
+		// 			{
+		// 				"title": "Indonesia",
+		// 				"value": "Indonesia"
+		// 			},
+		// 			{
+		// 				"title": "Thailand",
+		// 				"value": "Thailand"
+		// 			},
+		// 			{
+		// 				"title": "Vietnam",
+		// 				"value": "Vietnam"
+		// 			},
+		// 			{
+		// 				"title": "China",
+		// 				"value": "China"
+		// 			},
+		// 			{
+		// 				"title": "Turkey",
+		// 				"value": "Turkey"
+		// 			}
+		// 		],
+		// 		"buttons": [
+		// 			{
+		// 				"title": "Done",
+		// 				"type": "postback",
+		// 				"payload": "payload"
+		// 			}
+		// 		]
+		// 	}
+		// };
+		
+		// print(JSON.stringify(message));
+
+
 		if (tempType === "dropdown_template") {
 			return dropdownTemplate;
 		} else if (tempType === "checkBoxesTemplate") {
@@ -3355,6 +3457,12 @@ var checkListTemplate = '<script id="chat_checklist_tmpl" type="text/x-jqury-tmp
 		else if(tempType === "checkListTemplate") {
             return checkListTemplate;
         }
+	// hoonartek customization for travel country starts start
+	else if(tempType === "countryDropdownTemplate"){
+			console.log("This is the country selection template.");
+			
+            return countryDropdownTemplate;
+		}
 		else {
 			return "";
 		}
