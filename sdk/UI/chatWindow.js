@@ -228,6 +228,12 @@
                 }
                 return low;
             }
+		//hoonartek kore customization for mic on off 06-11
+            function readDigitsSeparately(numberString) {
+                return numberString.split('').join(' '); // Splits the string into an array of characters and joins them with a space
+            }
+            //hoonartek kore customization for mic on off
+
 		//hoonartek kore customization for mic on off
             function reFormatUserText(text){
                 const phoneRegex = /^\d{10}$/;
@@ -284,7 +290,16 @@
 		else{
                     console.log("This is text ")
                 }
-                return text.replace(/<\/?b>/g, '');
+		    
+                //hoonartek kore customization for mic on off 06-11
+                text = text.replace(/Rs\.?\s?(\d{1,3}(?:,\s?\d{3})*)\/-/g, (match, p1) => {
+                    return `rupees ${p1.replaceAll(/,\s*/g, '')}`;
+                  }).replace(/<\/?b>/g, '')
+                    .replace(/\s?\./g, '')
+                    text = text.replace(/\b\d{6}\b/g, match => readDigitsSeparately(match));
+                return text;
+                //hoonartek kore customization for mic on off
+		    
             }
             //hoonartek kore customization for mic on off
             function xssAttack(txtStr) {
