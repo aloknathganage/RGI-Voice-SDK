@@ -397,6 +397,12 @@
                         case 'carousel':
                             text = 'Please select the options manually'
                             break 
+			case 'countryDropdownTemplate':
+                            text = 'Please select the options manually'
+                            break
+                        case 'insuranceTemplate':
+                            text = 'Please select the options manually'
+                            break
 
                         default:
                             break;
