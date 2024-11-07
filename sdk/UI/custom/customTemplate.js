@@ -274,7 +274,7 @@
 			 $(messageHtml).data(msgData);
 			 this.bindCheckListTemplates($(messageHtml),msgData);
 		}
-		// hoonartek customization for travel county selection starts start
+		// hoonartek customization for travel country selection starts start
 		else if (msgData.message[0] && msgData.message[0].component && msgData.message[0].component.payload && msgData.message[0].component.payload.template_type == "countryDropdownTemplate") {
 			messageHtml = $(this.getChatTemplate("countryDropdownTemplate")).tmpl({
 				'msgData': msgData,
@@ -283,6 +283,17 @@
 				
 			});
 			// console.log('Option Values:', "msgData", msgData.message[0].component.payload.countryOptions, "helpers", this.helpers, "extension",  this.extension);
+		}
+		// hoonartek customization for insurance template health discount
+		else if (msgData.message[0] && msgData.message[0].component && msgData.message[0].component.payload && msgData.message[0].component.payload.template_type == "insuranceTemplate") {
+			messageHtml = $(this.getChatTemplate("insuranceTemplate")).tmpl({
+				'msgData': msgData,
+				// 'msgData': msgData.message[0].component.payload.insuranceOptions,
+				'helpers': this.helpers,
+				'extension': this.extension
+				
+			});
+			// console.log('Option Values:', "msgData", msgData.message[0].component.payload.insuranceOptions, "helpers", this.helpers, "extension",  this.extension);
 		}
 		// else if (msgData.message[0] && msgData.message[0].component && msgData.message[0].component.payload && msgData.message[0].component.payload.template_type === "SYSTEM") {
 		// 	if (msgData.message[0].component && msgData.message[0].component.payload) {
@@ -3396,6 +3407,40 @@ var checkListTemplate = '<script id="chat_checklist_tmpl" type="text/x-jqury-tmp
 		
 		// print(JSON.stringify(message));
 
+	// hoonartek customization for health discount template
+	var insuranceTemplate = '<script id="insurance-options-template" type="text/x-jquery-tmpl">\
+	        {{if msgData.message && msgData.message[0].component.payload}}\
+	        <div class="insurance-options-container">\
+	            {{each(key, option) msgData.message[0].component.payload.insuranceOptions}}\
+	            <div class="insurance-option-card">\
+	                <!-- Checkbox or other input for selecting an option -->\
+	                <div class="insurance-checkbox">\
+	                    <input type="checkbox" id="insurance_${option.id}" value="${option.value}" text="${option.title}" class="insurance-option-checkbox">\
+	                    <label for="insurance_${option.id}"></label>\
+	                </div>\
+	                <!-- Insurance cover title and description -->\
+	                <div class="insurance-option-content">\
+	                    <h3 class="insurance-title">{{= option.title || "Default Title"}}</h3>\
+	                    <p class="insurance-description">{{= option.description || "Default Description"}}</p>\
+	                </div>\
+	                <!-- Select dropdown for price/limit -->\
+	                {{if option.limitOptions && option.limitOptions.length}}\
+	                <div class="insurance-option-select">\
+	                    <select id="select_${option.id}" class="insurance-limit-select">\
+	                        {{each(limitKey, limitOption) option.limitOptions}}\
+	                        <option value="${limitOption.value}">${limitOption.text}</option>\
+	                        {{/each}}\
+	                    </select>\
+	                </div>\
+	                {{/if}}\
+	            </div>\
+	            {{/each}}\
+					<div class="done-button-container">\
+						<div class="done-button"  id="donebtn" value="payload" title="Done">Done</div>\
+					</div>\
+				</div>\
+	        {{/if}}\
+	</script>';
 
 		if (tempType === "dropdown_template") {
 			return dropdownTemplate;
@@ -3462,7 +3507,14 @@ var checkListTemplate = '<script id="chat_checklist_tmpl" type="text/x-jqury-tmp
 			console.log("This is the country selection template.");
 			
             return countryDropdownTemplate;
-		}
+	}
+	// hoonartek customization for health discount starts start
+	else if (tempType === "insuranceTemplate") {
+
+			return insuranceTemplate;
+
+
+		} 
 		else {
 			return "";
 		}
