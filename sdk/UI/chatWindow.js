@@ -32,7 +32,66 @@
         });
     // hoonartek customization starts for country selection template for enable done after any one checkbox selected ends
 
-	
+	// hoonartek customization starts for the health template for enable done after any one checkbox selected & None of the above
+    $(document).on('click', '.insurance-options-container', function() {
+        let sdcVal= Number(sessionStorage.getItem('sdc'))
+        var checkboxes = document.querySelectorAll('.insurance-option-checkbox');
+        const noneOfTheAboveValue = "None of the above";
+
+        var checkedValues = Array.prototype.filter.call(checkboxes, function(checkbox) {
+            return checkbox.checked;
+        }).map(function(checkedCheckbox) {
+            return checkedCheckbox.getAttribute('text');  // hoonartek customization  // Get the value of the checked checkbox
+        });
+
+
+        if(sdcVal){
+            checkedCount = checkedCount - sdcVal
+        }
+
+        // customization
+        if (checkedValues.includes(noneOfTheAboveValue)) {
+            // "None of the Above" is selected, disable all other checkboxes
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value !== noneOfTheAboveValue) {
+                    checkbox.checked = false;  // Uncheck other checkboxes
+                    checkbox.disabled = true;  // Disable other checkboxes
+                    // checkbox.style.pointerEvents = 'none';  // Prevent interaction
+                }
+            });
+            // Recalculate `checkedValues` after unchecking other checkboxes
+                checkedValues = [noneOfTheAboveValue];  // Set checkedValues to only include "None of the Above"
+                checkedCount = 1;  // Update checkedCount accordingly
+
+            // Disable the Done button if "None of the Above" is selected
+            document.querySelectorAll('.checkboxBtn').forEach(function(button) {
+                button.style.pointerEvents = 'none';
+            });
+        } else {
+            // "None of the Above" is not selected, enable all other checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.disabled = false;  // Enable all checkboxes
+                checkbox.style.pointerEvents = 'auto';  // Reset pointer events
+            });
+        }
+        // customization
+        // Calculate the number of checked checkboxes
+        var checkedCount = checkedValues.length;
+
+        if (checkedCount > 0) {
+            document.querySelectorAll('.done-button').forEach(function(checkbox) {
+                checkbox.style.pointerEvents = 'auto';
+            
+            });
+        } else {
+            document.querySelectorAll('.done-button').forEach(function(checkbox) {
+                checkbox.style.pointerEvents = 'none';
+            });
+        }
+        console.log('Number of checked checkboxes: ' + checkedCount);
+        console.log('checkedValuess - : ' + checkedValues);
+    });
+
     return function koreBotChat() {
         /* Hoonartek Customization starts */
         window.micAutoOnOff = false;
@@ -1720,7 +1779,7 @@
                     });
                 });
                 //hoonartek customization for country selection template for travel - search functionality ends
-                _chatContainer.off('click', '.buttonTmplContentBox li,.listTmplContentChild .buyBtn,.viewMoreList .viewMore,.listItemPath,.quickReply,.carouselImageContent,.listRightContent,.checkboxBtn,.likeDislikeDiv,.buttonQuickReply, .doneBtn').on('click', '.buttonTmplContentBox li,.listTmplContentChild .buyBtn, .viewMoreList .viewMore,.listItemPath,.quickReply,.carouselImageContent,.listRightContent,.checkboxBtn,.likeDislikeDiv,.buttonQuickReply, .doneBtn', function (e) {
+                _chatContainer.off('click', '.buttonTmplContentBox li,.listTmplContentChild .buyBtn,.viewMoreList .viewMore,.listItemPath,.quickReply,.carouselImageContent,.listRightContent,.checkboxBtn,.likeDislikeDiv,.buttonQuickReply, .doneBtn, .done-button').on('click', '.buttonTmplContentBox li,.listTmplContentChild .buyBtn, .viewMoreList .viewMore,.listItemPath,.quickReply,.carouselImageContent,.listRightContent,.checkboxBtn,.likeDislikeDiv,.buttonQuickReply, .doneBtn, .done-button', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     var type = $(this).attr('type');
@@ -1789,7 +1848,56 @@
                         console.log('Done button disabled successfully after submission.');
                     }
                      // hoonartek customization ends for the travel country selection template ends
+			
+		// hoonartek customization for health discount template done button
+                    if (e.currentTarget.classList && e.currentTarget.classList.length > 0 && e.currentTarget.classList[0] === 'done-button') {
+                        var checkboxSelection = $(e.currentTarget.parentElement.parentElement).find('.insurance-option-checkbox:checked')
+                        console.log('Checked checkboxes:', checkboxSelection);
+                        
+                        var selectedValue = [];
+                        var toShowText = [];
+                        console.log('in if of list done buuton')
 
+                        for (var i = 0; i < checkboxSelection.length; i++) {
+                            // Capture the value of the checkbox
+                            var value = $(checkboxSelection[i]).attr('value');
+                            var checkboxText = $(checkboxSelection[i]).attr('text');  // Use 'text' if available, otherwise the value
+                            // selectedValue.push(value);
+                            // selectedValue.push($(checkboxSelection[i]).attr('value'));
+                            
+
+                            //add the insurance-limit-select   dropdown
+                            var limitSelect = $(checkboxSelection[i]).closest('.insurance-option-card').find('.insurance-limit-select');
+                            if (limitSelect && limitSelect.length > 0) {
+                                var selectedLimitValue = limitSelect.val();  // Get the selected dropdown value
+                                checkboxText += ` (Limit: ${selectedLimitValue})`;  // Format text as "CheckboxValue (Limit: ₹500)"
+                            }
+
+                            selectedValue.push(value);
+                            toShowText.push(checkboxText);
+                            console.log('selectedValue,,,,', selectedValue.toString())
+
+                        }
+                        console.log('selectedValue.toString() ----',selectedValue.toString())
+
+                        // $('.chatInputBox').text($(this).attr('title') +': '+ selectedValue.toString()); //to display in textinput msg area 
+                        // $('.chatInputBox').text(selectedValue.toString());
+                        // me.sendMessage($('.chatInputBox'),toShowText.toString());    //to send to chat bot
+
+                        // $('.chatInputBox').text(toShowText.length > 0 ? toShowText.join(', ') : 'No option selected');
+                        // $('.chatInputBox').text(toShowText.length > 0 ? toShowText.join(', ') : selectedValue);
+                        $('.chatInputBox').text($(this).attr('title') +': '+ selectedValue.toString());
+
+                        // Send the message to the chat with the updated text
+                        me.sendMessage($('.chatInputBox'), toShowText.toString());
+
+                        // hoonartek customization for disable the Done button after submission
+                        $(e.currentTarget).prop('disabled', true);
+                        $(e.currentTarget).css('pointer-events', 'none'); // Optionally disable pointer events
+                        $(e.currentTarget).css('opacity', '0.8'); 
+
+                    }
+                    // hoonartek customization for health discount template done button ends
                     if (e.currentTarget.classList && e.currentTarget.classList.length > 0 && e.currentTarget.classList[0] === 'checkboxBtn') {
                         var checkboxSelection = $(e.currentTarget.parentElement.parentElement).find('.checkInput:checked')
                         var selectedValue = [];
