@@ -7893,3 +7893,20 @@
     background-color: #e68a00;
 } */
 /* health template cust ends */
+  /* hoonartek customization for done: issue for health addons template  just after rendering */
+  .done-button-container .done-button {
+	pointer-events: none;
+}
+ /* hoonartek customization for done: issue ends */
+
+
+ /* hoonartek customization for country drop down disbale done issue just after rendering */
+ .doneButtonContainer .doneBtn {
+	pointer-events: none;
+}
+/* end */
+
+ /* kore customization for done: disbale done issue just after rendering */
+ .checkboxButtons .checkboxBtn {
+	pointer-events: none;
+}
