@@ -3445,8 +3445,31 @@ var checkListTemplate = '<script id="chat_checklist_tmpl" type="text/x-jqury-tmp
 		if (tempType === "dropdown_template") {
 			return dropdownTemplate;
 		} else if (tempType === "checkBoxesTemplate") {
+			console.log('2ndd checkBoxesTemplate')
+			// Call the reset function initially when the page is loaded or template is rendered
+				// hoonartek customization for none of the above  checkBoxesTemplate
+				const noneOfTheAboveValue = "None of the above";
+				var checkboxes = document.querySelectorAll('.checkInput');
+				var checkedValues = Array.prototype.filter.call(checkboxes, function(checkbox) {
+					return checkbox.checked;
+				}).map(function(checkedCheckbox) {
+					return checkedCheckbox.getAttribute('text');  //customization  // Get the value of the checked checkbox
+				});
+				console.log("before iffffffffffffffffffffffffffffffffff")
+				if (checkedValues.includes(noneOfTheAboveValue)) {
+					checkboxes.forEach(checkbox => {
+						if (checkbox.value == noneOfTheAboveValue) {
+							checkbox.checked = false;  // Uncheck other checkboxes
+							checkbox.disabled = false;  // Disable other checkboxes
+							checkbox.style.pointerEvents = 'auto';  // Prevent interaction
+						}
+					});
+			}
+
 			return checkBoxesTemplate;
-		} else if (tempType === "likeDislikeTemplate") {
+		} 
+		// hoonartek customization for none of the above  checkBoxesTemplate
+		else if (tempType === "likeDislikeTemplate") {
 			return likeDislikeTemplate;
 		}else if(tempType === "formTemplate"){
             return formTemplate;
