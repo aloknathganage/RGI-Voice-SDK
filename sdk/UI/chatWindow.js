@@ -356,6 +356,7 @@
                 let removeSpaces = text.replace(/\s/g, "");
                 const vehicleRegex = /\b[a-z]{2}\d{2}[a-z]{2}\d{4}\b/i;
 		const policyRegex = /^\d{18}$/;
+		const pincodeRegex = /^\d{6}$/;
                   if (vehicleRegex.test(removeSpaces)) {
                     return removeSpaces.replace(/(\w{2})(\d{2})(\w{2})(\d{4})/, "$1-$2-$3-$4");
                   }
@@ -363,6 +364,9 @@
                       return removeSpaces
                   }
 		if(policyRegex.test(removeSpaces)){
+                    return removeSpaces
+                }
+		if(pincodeRegex.test(removeSpaces)){
                     return removeSpaces
                 }
                 return text.replace(/\.$/, '');
