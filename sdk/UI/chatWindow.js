@@ -7,7 +7,64 @@
     window.koreBotChat = factory();
     //}
 })(function () {
+	 // hoonartek customization starts Done : button and for checkboxes template None of the above - ALok
+        $(document).on('click', '.listTmplContent', function() {
+        let sdcVal= Number(sessionStorage.getItem('sdc'))
+        var checkboxes = document.querySelectorAll('.checkInput');
+        const noneOfTheAboveValue = "None of the above";
+        // Get the checked checkboxes and their values
+        var checkedValues = Array.prototype.filter.call(checkboxes, function(checkbox) {
+            return checkbox.checked;
+        }).map(function(checkedCheckbox) {
+            return checkedCheckbox.getAttribute('text');  //customization  // Get the value of the checked checkbox
+        });
+
+        if(sdcVal){
+            checkedCount = checkedCount - sdcVal
+        }
+        // customization
+        if (checkedValues.includes(noneOfTheAboveValue)) {
+            // "None of the Above" is selected, disable all other checkboxes
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value !== noneOfTheAboveValue) {
+                    checkbox.checked = false;  // Uncheck other checkboxes
+                    checkbox.disabled = true;  // Disable other checkboxes
+                    // checkbox.style.pointerEvents = 'none';  // Prevent interaction
+                }
+            });
+            // Recalculate `checkedValues` after unchecking other checkboxes
+                checkedValues = [noneOfTheAboveValue];  // Set checkedValues to only include "None of the Above"
+                checkedCount = 1;  // Update checkedCount accordingly
+
+            // Disable the Done button if "None of the Above" is selected
+            document.querySelectorAll('.checkboxBtn').forEach(function(button) {
+                button.style.pointerEvents = 'none';
+            });
+        } else {
+            // "None of the Above" is not selected, enable all other checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.disabled = false;  // Enable all checkboxes
+                checkbox.style.pointerEvents = 'auto';  // Reset pointer events
+            });
+        }
+        // customization
+         // Calculate the number of checked checkboxes
+         var checkedCount = checkedValues.length;
+
+        if (checkedCount > 0) {
+            document.querySelectorAll('.checkboxBtn').forEach(function(checkbox) {
+                checkbox.style.pointerEvents = 'auto';
+            });
+        } else {
+            document.querySelectorAll('.checkboxBtn').forEach(function(checkbox) {
+                checkbox.style.pointerEvents = 'none';
+            });
+        }
+        console.log('Number of checked checkboxes: ' + checkedCount);
+        console.log('checkedValuess - : ' + checkedValues);
+    });
 	
+
     // hoonartek customization starts for the country selection template for enable done after any one checkbox selected
     $(document).on('click', '.buttonTmplContent', function() {
             let sdcVal= Number(sessionStorage.getItem('sdc'))
