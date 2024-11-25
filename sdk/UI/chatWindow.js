@@ -4830,21 +4830,25 @@
                     }
                     //console.log('Interm: ',interim_transcript);
                     //console.log('final: ',final_transcript);
-                    if (recognizing) {
+			
+		// hoonartek Kore customization for mic on off - Navya
+                    if (recognizing && sessionStorage.getItem("mic")== 'true') {
                         $('.chatInputBox').html(prevStr + "" + interim_transcript);
                         $('.sendButton').removeClass('disabled');
                         micEnable();
                     }
-                    // Hoonartek customization starts
+		// hoonartek Kore customization for mic on off ends- Navya 
+			
+                    // hoonartek kore customization starts
                     if (final_transcript !== "") {
                         var me = window.chatContainerConfig;
                         me.sendMessage($('.chatInputBox'));
-                        // final_transcript = "";
+                        final_transcript = "";	// hoonartek Kore customization for mic on off - Navya
                         prevStr ="";
                         // recognition.stop()  //for turn off mic after send 
 
                     }
-                    // Hoonartek customization ends
+                    // hoonartek kore customization ends
                     setTimeout(function () {
                         setCaretEnd(document.getElementsByClassName("chatInputBox"));
                         document.getElementsByClassName('chatInputBox')[0].scrollTop = document.getElementsByClassName('chatInputBox')[0].scrollHeight;
@@ -5199,7 +5203,7 @@
 
             function playMessageSequence() {
                 //hoonartek kore customization for mic on off (stop the recognization while message playing through speaker)
-                if(recognizing){
+                if(recognizing && audioPlaying){	//hoonartek kore customization for mic on off
                     recognition.stop();
                 }
                 //hoonartek kore customization for mic on off
@@ -5219,10 +5223,10 @@
                         playMessageSequence();
                     }
                 }//hoonartek kore customization for mic on off
-                if(recognizing){
+                if(recognizing && audioPlaying){    //hoonartek kore customization for mic on off
                     recognition.stop();
                 }
-                else if(sessionStorage.getItem("mic")== 'true' && !recognizing){
+                else if(sessionStorage.getItem("mic")== 'true' && !recognizing && !audioPlaying){   //hoonartek kore customization for mic on off
                     recognition.start();  
                 }
                 //hoonartek kore customization for mic on off
